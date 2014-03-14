@@ -1,0 +1,39 @@
+#!/usr/bin/env perl -i
+
+use v5.16;
+use warnings;
+use File::Path 'make_path';
+use Getopt::Long;
+use LWP::Simple;
+
+my $url_pattern = qr'(http://i.imgur.com/((\w+).jpg))'i;
+my $image_folder = 'images';
+my $replacement_url = '';
+
+my $args_ok = GetOptions(
+    'image-folder=s'    => \$image_folder,
+    'replacement-url=s' => \$replacement_url,
+    'url-pattern=s'     => \$url_pattern,
+);
+
+die "Invalid arguments, please see the source" unless $args_ok;
+
+$replacement_url = $image_folder if not $replacement_url;
+make_path($image_folder) if not -d $image_folder;
+
+sub translate_url
+{
+    my ($url, $file, $id) = @_;
+    my $output = join "/", $image_folder, $file;
+    my $result = getstore($url, $output);
+    if (is_success($result)) {
+        return join "/", $replacement_url, $file;
+    } else {
+        return $url;
+    }
+}
+
+while (<>) {
+    s/$url_pattern/translate_url($1, $2, $3)/gei;
+    print;
+}
