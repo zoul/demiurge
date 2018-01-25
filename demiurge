@@ -6,7 +6,7 @@ use File::Path 'make_path';
 use Getopt::Long;
 use LWP::Simple;
 
-my $url_pattern = qr'(http://i.imgur.com/((\w+).jpg))'i;
+my $url_pattern = qr'(https?://i.imgur.com/((\w+).jpg))'i;
 my $image_folder = 'images';
 my $replacement_url = '';
 
