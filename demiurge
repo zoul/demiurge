@@ -29,6 +29,7 @@ sub translate_url
     if (is_success($result)) {
         return join "/", $replacement_url, $file;
     } else {
+        warn "Failed to fetch '$url': $result";
         return $url;
     }
 }
